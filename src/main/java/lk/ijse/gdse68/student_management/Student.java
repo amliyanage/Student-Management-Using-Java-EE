@@ -26,6 +26,7 @@ public class Student extends HttpServlet {
     private static final String SAVE_STUDENT = "INSERT INTO STUDENT (Stu_Id, Name, email, level) VALUES (?, ?, ?, ?)";
     private static final String GET_STUDENT = "SELECT * FROM STUDENT WHERE Stu_Id = ?";
     private static final String UPDATE_STUDENT = "UPDATE STUDENT SET Name = ?, email = ?, level = ? WHERE Stu_Id = ?";
+    private static final String DELETE_STUDENT = "DELETE FROM STUDENT WHERE Stu_Id = ?";
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -133,6 +134,20 @@ public class Student extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         // TODO: Delete Student
+
+        try (var writer = resp.getWriter()) {
+            var studentId = req.getParameter("studentId");
+            PreparedStatement ps = connection.prepareStatement(DELETE_STUDENT);
+            ps.setString(1, studentId);
+            if (ps.executeUpdate() != 0) {
+                writer.write("Delete Student Successfully");
+                resp.setStatus(HttpServletResponse.SC_OK);
+            } else {
+                writer.write("Delete Student Failed");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

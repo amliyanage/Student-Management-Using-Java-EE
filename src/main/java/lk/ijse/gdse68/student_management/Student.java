@@ -2,6 +2,7 @@ package lk.ijse.gdse68.student_management;
 
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
+import jakarta.json.bind.JsonbException;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -24,6 +25,7 @@ public class Student extends HttpServlet {
 
     private static final String SAVE_STUDENT = "INSERT INTO STUDENT (Stu_Id, Name, email, level) VALUES (?, ?, ?, ?)";
     private static final String GET_STUDENT = "SELECT * FROM STUDENT WHERE Stu_Id = ?";
+    private static final String UPDATE_STUDENT = "UPDATE STUDENT SET Name = ?, email = ?, level = ? WHERE Stu_Id = ?";
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -102,8 +104,32 @@ public class Student extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // TODO: Update Student
+
+        Jsonb jsonb = JsonbBuilder.create();
+        StudentDto studentDto;
+
+        studentDto = jsonb.fromJson(req.getReader(), StudentDto.class);
+
+        try (PreparedStatement pstm = connection.prepareStatement(UPDATE_STUDENT)) {
+            pstm.setString(1, studentDto.getName());
+            pstm.setString(2, studentDto.getEmail());
+            pstm.setString(3, studentDto.getLevel());
+            pstm.setString(4, studentDto.getId());
+
+            int rowsUpdated = pstm.executeUpdate();
+
+            if (rowsUpdated > 0) {
+                // resp.setStatus(HttpServletResponse.SC_NO_CONTENT); // no any content push toward front end application
+                resp.setStatus(HttpServletResponse.SC_OK);
+                resp.getWriter().write("Student updated successfully");
+            } else {
+                resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Student not found");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
+
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

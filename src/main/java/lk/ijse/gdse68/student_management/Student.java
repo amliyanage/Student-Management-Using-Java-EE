@@ -23,6 +23,7 @@ public class Student extends HttpServlet {
     private Connection connection;
 
     private static final String SAVE_STUDENT = "INSERT INTO STUDENT (Stu_Id, Name, email, level) VALUES (?, ?, ?, ?)";
+    private static final String GET_STUDENT = "SELECT * FROM STUDENT WHERE Stu_Id = ?";
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -37,11 +38,6 @@ public class Student extends HttpServlet {
         } catch (ClassNotFoundException | SQLException e) {
             throw new ServletException(e);
         }
-    }
-
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // TODO: Get Student
     }
 
     @Override
@@ -75,6 +71,32 @@ public class Student extends HttpServlet {
         } catch (Exception e) {
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // TODO: Get Student
+        try (var writer = resp.getWriter()) {
+        System.out.println("invoked");
+
+            StudentDto studentDto = new StudentDto();
+            Jsonb jsonb = JsonbBuilder.create();
+            var stuId = req.getParameter("Stu_Id");
+            PreparedStatement pstm = connection.prepareStatement(GET_STUDENT);
+            pstm.setString(1, stuId);
+            var resultSet = pstm.executeQuery();
+            while (resultSet.next()){
+                studentDto.setId(resultSet.getString(1));
+                studentDto.setName(resultSet.getString(2));
+                studentDto.setEmail(resultSet.getString(3));
+                studentDto.setLevel(resultSet.getString(4));
+            }
+            resp.setContentType("application/json");
+            jsonb.toJson(studentDto, writer);
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 

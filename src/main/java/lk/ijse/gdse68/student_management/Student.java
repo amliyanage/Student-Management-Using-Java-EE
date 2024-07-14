@@ -18,10 +18,16 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.rmi.server.UID;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.UUID;
 
 @WebServlet(urlPatterns = "/student")
 public class Student extends HttpServlet {
+
+    private Connection connection;
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         //TODO, Get Student
@@ -33,35 +39,8 @@ public class Student extends HttpServlet {
         if ( req.getContentType() == null || !req.getContentType().toLowerCase().startsWith("application/json") ){
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
         }
-//        BufferedReader reader = req.getReader();
-//        StringBuilder stringBuilder = new StringBuilder();
-//        reader.lines().forEach(
-//                line -> stringBuilder.append(line).append("\n")
-//        );
-//        System.out.println(stringBuilder);
-
-//        JsonReader reader = Json.createReader(req.getReader());
-//        JsonObject jsonObject = reader.readObject();
-//        String id = jsonObject.getString("id");
-//        System.out.println("Student id : " + id);
-
-//        //Data to Client
-//        var writer = resp.getWriter();
-//        writer.write(id);
-
-        //json array processing
-//        JsonArray jsonValues = reader.readArray();
-//        for (int i = 0; i < jsonValues.size(); i++) {
-//            var jsonObject = jsonValues.getJsonObject(i);
-//            System.out.println(jsonObject.getString("id"));
-//            resp.getWriter().write(jsonObject.getString("id")+"\n");
-//        }
-
-//        JsonReader reader = Json.createReader(req.getReader());
-//        var students = new StudentDto();
 
         Jsonb jsonb = JsonbBuilder.create();
-//        PrintWriter writer = resp.getWriter();
         StudentDto studentDto = jsonb.fromJson(req.getReader(), StudentDto.class);
         studentDto.setId(Utils.generateId());
 
@@ -79,5 +58,18 @@ public class Student extends HttpServlet {
         //TODO , Delete Student
     }
 
-
+    @Override
+    public void init() throws ServletException {
+        //TODO, Initialize
+        try {
+            var dbClass = getServletContext().getInitParameter("com.mysql.cj.jdbc.Driver");
+            var dbUrl = getServletContext().getInitParameter("jdbc:mysql://localhost:3306/student_management");
+            var dbUsername = getServletContext().getInitParameter("root");
+            var dbPassword = getServletContext().getInitParameter("Ijse@2024");
+            Class.forName(dbClass);
+            this. connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

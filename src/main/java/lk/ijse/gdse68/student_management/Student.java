@@ -24,12 +24,12 @@ import java.util.UUID;
 public class Student extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        //Too, Get Student
+        //TODO, Get Student
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        //Too Save Student
+        //TODO Save Student
         if ( req.getContentType() == null || !req.getContentType().toLowerCase().startsWith("application/json") ){
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
         }
@@ -71,12 +71,12 @@ public class Student extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        //Too , Update Student
+        // TODO: Update Student
     }
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        //Too , Delete Student
+        //TODO , Delete Student
     }
 
 

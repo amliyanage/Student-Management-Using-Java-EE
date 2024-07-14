@@ -10,7 +10,7 @@
     </context-param>
     <context-param>
         <param-name>db-url</param-name>
-        <param-value>value</param-value>
+        <param-value>jdbc:mysql://localhost:3306/student_management</param-value>
     </context-param>
     <context-param>
         <param-name>db-username</param-name>
@@ -20,5 +20,8 @@
         <param-name>db-password</param-name>
         <param-value>Ijse@2024</param-value>
     </context-param>
-
+    <context-param>
+        <param-name>My Para</param-name>
+        <param-value>Hello world</param-value>
+    </context-param>
 </web-app>

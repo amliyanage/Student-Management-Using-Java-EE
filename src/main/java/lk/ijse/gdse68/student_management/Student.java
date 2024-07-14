@@ -105,28 +105,27 @@ public class Student extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        Jsonb jsonb = JsonbBuilder.create();
-        StudentDto studentDto;
+        // Todo: Update Student
 
-        studentDto = jsonb.fromJson(req.getReader(), StudentDto.class);
+        try (var writer = resp.getWriter()) {
+            var studentId = req.getParameter("studentId");
+            Jsonb jsonb = JsonbBuilder.create();
+            StudentDto studentDTO = jsonb.fromJson(req.getReader(), StudentDto.class);
 
-        try (PreparedStatement pstm = connection.prepareStatement(UPDATE_STUDENT)) {
-            pstm.setString(1, studentDto.getName());
-            pstm.setString(2, studentDto.getEmail());
-            pstm.setString(3, studentDto.getLevel());
-            pstm.setString(4, studentDto.getId());
-
-            int rowsUpdated = pstm.executeUpdate();
-
-            if (rowsUpdated > 0) {
-                // resp.setStatus(HttpServletResponse.SC_NO_CONTENT); // no any content push toward front end application
-                resp.setStatus(HttpServletResponse.SC_OK);
-                resp.getWriter().write("Student updated successfully");
+            // SQL Process
+            var ps = connection.prepareStatement(UPDATE_STUDENT);
+            ps.setString(1, studentDTO.getName());
+            ps.setString(2, studentDTO.getEmail());
+            ps.setString(3, studentDTO.getLevel());
+            ps.setString(4, studentId);
+            if (ps.executeUpdate() != 0) {
+                writer.write("Update Student Successfully");
+                resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
             } else {
-                resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Student not found");
+                writer.write("Update Student Failed");
             }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

@@ -24,4 +24,8 @@
         <param-name>My Para</param-name>
         <param-value>Hello world</param-value>
     </context-param>
+    <context-param>
+        <param-name>origin</param-name>
+        <param-value>http://localhost:63342</param-value>
+    </context-param>
 </web-app>

@@ -12,6 +12,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import lk.ijse.gdse68.student_management.Dto.StudentDto;
 import lk.ijse.gdse68.student_management.util.Utils;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -32,14 +35,20 @@ public class Student extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         try {
-            var dbClass = getServletContext().getInitParameter("db-class");
-            var dbUrl = getServletContext().getInitParameter("db-url");
-            var dbUsername = getServletContext().getInitParameter("db-username");
-            var dbPassword = getServletContext().getInitParameter("db-password");
-            Class.forName(dbClass);
-            this.connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
-        } catch (ClassNotFoundException | SQLException e) {
-            throw new ServletException(e);
+
+//            var dbClass = getServletContext().getInitParameter("db-class");
+//            var dbUrl = getServletContext().getInitParameter("db-url");
+//            var dbUsername = getServletContext().getInitParameter("db-username");
+//            var dbPassword = getServletContext().getInitParameter("db-password");
+//            Class.forName(dbClass);
+//            this.connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
+
+            var initialContext = new InitialContext();
+            DataSource pool = (DataSource) initialContext.lookup("java:comp/env/jdbc/student_management");
+            this.connection = pool.getConnection();
+
+        } catch (SQLException | NamingException e) {
+            e.printStackTrace();
         }
     }
 

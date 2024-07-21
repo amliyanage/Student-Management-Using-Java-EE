@@ -4,28 +4,53 @@
          xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
          version="6.0">
 
-    <context-param>
-        <param-name>db-class</param-name>
-        <param-value>com.mysql.cj.jdbc.Driver</param-value>
-    </context-param>
-    <context-param>
-        <param-name>db-url</param-name>
-        <param-value>jdbc:mysql://localhost:3306/student_management</param-value>
-    </context-param>
-    <context-param>
-        <param-name>db-username</param-name>
-        <param-value>root</param-value>
-    </context-param>
-    <context-param>
-        <param-name>db-password</param-name>
-        <param-value>Ijse@2024</param-value>
-    </context-param>
-    <context-param>
-        <param-name>My Para</param-name>
-        <param-value>Hello world</param-value>
-    </context-param>
+<!--    <context-param>-->
+<!--        <param-name>db-class</param-name>-->
+<!--        <param-value>com.mysql.cj.jdbc.Driver</param-value>-->
+<!--    </context-param>-->
+<!--    <context-param>-->
+<!--        <param-name>db-url</param-name>-->
+<!--        <param-value>jdbc:mysql://localhost:3306/student_management</param-value>-->
+<!--    </context-param>-->
+<!--    <context-param>-->
+<!--        <param-name>db-username</param-name>-->
+<!--        <param-value>root</param-value>-->
+<!--    </context-param>-->
+<!--    <context-param>-->
+<!--        <param-name>db-password</param-name>-->
+<!--        <param-value>Ijse@2024</param-value>-->
+<!--    </context-param>-->
+<!--    <context-param>-->
+<!--        <param-name>My Para</param-name>-->
+<!--        <param-value>Hello world</param-value>-->
+<!--    </context-param>-->
     <context-param>
         <param-name>origin</param-name>
         <param-value>http://localhost:63342</param-value>
     </context-param>
+
+    <filter>
+        <filter-name>Security</filter-name>
+        <filter-class>lk.ijse.gdse68.student_management.Filter.Security</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>Security</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <filter>
+        <filter-name>CORSFilter</filter-name>
+        <filter-class>lk.ijse.gdse68.student_management.Filter.CORSFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>CORSFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <resource-ref>
+        <description>DB Connection</description>
+        <res-ref-name>jdbc/student_management</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+    </resource-ref>
+
 </web-app>

@@ -10,9 +10,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @WebFilter(urlPatterns = "/*")
-public class CrossFilter extends HttpFilter {
+public class CORSFilter extends HttpFilter {
     @Override
     protected void doFilter(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws IOException, ServletException {
+        System.out.println("CORS Filter");
         var origin = getServletContext().getInitParameter("origin");
 
         if (origin != null) {
